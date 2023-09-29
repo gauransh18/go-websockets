@@ -27,7 +27,7 @@
       ></textarea>
 
       <br />
-    
+
       <form id="chatroom-message">
         <label for="message">Message:</label>
         <input type="text" id="message" name="message" /><br /><br />
@@ -35,12 +35,38 @@
       </form>
     </div>
 
-    
     <script type="text/javascript">
       // selectedchat is by default General.
       var selectedchat = 'general';
 
-      
+      class Event {
+        constructor(type, payload) {
+          this.type = type;
+          this.payload = payload;
+        }
+      }
+
+      function routeEvent(event) {
+        if (event.type == undefined) {
+          alert('no type field in the event');
+        }
+
+        switch (event.type) {
+          case 'new message':
+            console.log('event message');
+            break;
+          default:
+            alert('unsupported message type');
+            break;
+        }
+      }
+
+      function sendEvent(eventName, payload) {
+        const event = new Event(eventName, payload);
+
+        conn.send(JSON.stringify(event));
+      }
+
       function changeChatRoom() {
         // Change Header to reflect the Changed chatroom
         var newchat = document.getElementById('chatroom');
@@ -52,7 +78,7 @@
       function sendMessage() {
         var newmessage = document.getElementById('message');
         if (newmessage != null) {
-          console.log(newmessage);
+          sendEvent('send_message', newmessage.value);
         }
         return false;
       }
@@ -62,9 +88,16 @@
         document.getElementById('chatroom-message').onsubmit = sendMessage;
 
         if (window['WebSocket']) {
-          console.log('Supports websockets'); //lesgo
+          console.log('Supports websockets');
 
-          new WebSocket('ws://' + document.location.host + '/ws');
+          conn = new WebSocket('ws://' + document.location.host + '/ws');
+
+          conn.onmessage = function (evt) {
+            const eventData = JSON.parse(evt.data);
+
+            const event = Object.assign(new Event(), eventData);
+            routeEvent(event);
+          };
         } else {
           alert(
             'Your browser does not support websockets. Please use a modern browser'
