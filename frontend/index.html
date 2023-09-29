@@ -9,9 +9,6 @@
       <h1>Amazing Chat Application</h1>
       <h3 id="chat-header">Currently in chat: general</h3>
 
-      <!--
-        Here is a form that allows us to select what Chatroom to be in
-        -->
       <form id="chatroom-selection">
         <label for="chatroom">Chatroom:</label>
         <input type="text" id="chatroom" name="chatroom" /><br /><br />
@@ -19,9 +16,6 @@
       </form>
 
       <br />
-      <!--
-        Textarea to show messages from users
-        -->
       <textarea
         class="messagearea"
         id="chatmessages"
@@ -33,9 +27,7 @@
       ></textarea>
 
       <br />
-      <!--
-        Chatroom-message form is used to send messages
-        -->
+    
       <form id="chatroom-message">
         <label for="message">Message:</label>
         <input type="text" id="message" name="message" /><br /><br />
@@ -43,17 +35,12 @@
       </form>
     </div>
 
-    <!--
-        Javascript that is used to Connect to Websocket and Handle New messages
-    -->
+    
     <script type="text/javascript">
       // selectedchat is by default General.
       var selectedchat = 'general';
 
-      /**
-       * changeChatRoom will update the value of selectedchat
-       * and also notify the server that it changes chatroom
-       * */
+      
       function changeChatRoom() {
         // Change Header to reflect the Changed chatroom
         var newchat = document.getElementById('chatroom');
@@ -62,9 +49,6 @@
         }
         return false;
       }
-      /**
-       * sendMessage will send a new message onto the Websocket
-       * */
       function sendMessage() {
         var newmessage = document.getElementById('message');
         if (newmessage != null) {
@@ -75,7 +59,7 @@
 
       window.onload = function () {
         document.getElementById('chatroom-selection').onsubmit = changeChatRoom;
-        document.getElementById('chatroom-messages').onsubmit = sendMessages;
+        document.getElementById('chatroom-message').onsubmit = sendMessage;
 
         if (window['WebSocket']) {
           console.log('Supports websockets'); //lesgo
